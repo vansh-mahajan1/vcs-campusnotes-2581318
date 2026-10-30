@@ -1,0 +1,16 @@
+#!/bin/bash
+# pre-commit: reject the commit if any staged file contains TODO or FIXME
+status=0
+for file in $(git diff --cached --name-only --diff-filter=ACM -- . ":(exclude).githooks"); do
+    if grep -nE "TODO|FIXME" "$file" >/dev/null; then
+        echo "ERROR: '$file' contains TODO/FIXME:"
+        grep -nE "TODO|FIXME" "$file"
+        status=1
+    fi
+done
+if [ $status -ne 0 ]; then
+    echo "Commit rejected by pre-commit hook. Remove TODO/FIXME markers and try again."
+    exit 1
+fi
+echo "pre-commit: no TODO/FIXME found - OK"
+exit 0

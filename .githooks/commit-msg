@@ -1,0 +1,14 @@
+#!/bin/bash
+# commit-msg: enforce Conventional Commits prefix and minimum length
+msg=$(head -n1 "$1")
+if [ ${#msg} -lt 10 ]; then
+    echo "ERROR: commit message is too short (${#msg} chars, minimum 10)."
+    exit 1
+fi
+if ! echo "$msg" | grep -qE "^(feat|fix|docs|refactor|chore):"; then
+    echo "ERROR: commit message must start with feat:, fix:, docs:, refactor: or chore:"
+    echo "       got: \"$msg\""
+    exit 1
+fi
+echo "commit-msg: message format OK"
+exit 0
